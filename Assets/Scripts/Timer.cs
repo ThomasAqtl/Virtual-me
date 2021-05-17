@@ -36,7 +36,6 @@ public class Timer : MonoBehaviour
     // format _time = Vector3 (hours, minutes, seconds)
     private Vector3 _time;
 
-<<<<<<< HEAD
    private const float _anglePerHour = 360.0f/24.0f;
    private const float _anglePerMinute = _anglePerHour/60.0f;
    private const float _anglePerSecond = _anglePerMinute/60.0f;
@@ -55,17 +54,6 @@ public class Timer : MonoBehaviour
 
         _skyboxColor1 = RenderSettings.skybox.GetColor("_SkyGradientTop");
         _skyboxColor2 = RenderSettings.skybox.GetColor("_SkyGradientBottom");
-=======
-    // const
-    private const float _anglePerHour = 360.0f / 24.0f;
-    private const float _anglePerMinute = _anglePerHour / 60.0f;
-    private const float _anglePerSecond = _anglePerMinute / 60.0f;
-    private const float _secondsPerDay = 86400.0f;
-
-    private void Awake()
-    {
-        _time = new Vector3(hour, minute, second);
->>>>>>> e7dcf088ad58ba2b9e47ca8da45371e2e53932b1
     }
 
     private void Update()
@@ -78,12 +66,8 @@ public class Timer : MonoBehaviour
 
         UpdateSunPos();
         UpdateSkybox();
-<<<<<<< HEAD
         UpdateLantern();
     }    
-=======
-    }
->>>>>>> e7dcf088ad58ba2b9e47ca8da45371e2e53932b1
     private void UpdateTime() {
         _time.z += Time.deltaTime * timeFactor;
 
@@ -119,13 +103,8 @@ public class Timer : MonoBehaviour
         // Sky color varies with respect to time
 
         float t = _time.x * 3600.0f + _time.y * 60.0f + _time.z;
-<<<<<<< HEAD
         float lambda = SetLambda(t, _secondsPerDay);
         
-=======
-        float lambda = SetLambda(t);
-
->>>>>>> e7dcf088ad58ba2b9e47ca8da45371e2e53932b1
         Color c1 = lambda * skyboxTopColorDark + (1 - lambda) * skyboxTopColorBright;
         Color c2 = lambda * skyboxBottomColorDark + (1 - lambda) * skyboxBottomColorBright;
 
@@ -133,7 +112,6 @@ public class Timer : MonoBehaviour
         RenderSettings.skybox.SetColor("_SkyGradientBottom", c2);
     }
 
-<<<<<<< HEAD
     private void UpdateLantern() {
         float t = _time.x * 3600.0f + _time.y * 60.0f + _time.z;
         foreach (var li in GameObject.FindGameObjectsWithTag("LanternLight"))
@@ -154,19 +132,5 @@ public class Timer : MonoBehaviour
     // cosine-like periodic function of time with period p
     private float SetLambda(float t, float p) {
         return .5f * ( Mathf.Cos( 2 * Mathf.PI / p * t ) + 1 );
-=======
-    public string GetTime() {
-
-        string h = _time.x < 10 ? "0" + _time.x.ToString() : _time.x.ToString();
-        string m = _time.y < 10 ? "0" + _time.y.ToString() : _time.y.ToString();
-        string s = _time.z < 10 ? "0" + _time.z.ToString() : _time.z.ToString("0.");
-
-        string time = "TIME : " + h + ":" + m + ":" + s;
-        return time;
-    }
-
-    private float SetLambda(float t) {
-        return .5f * (Mathf.Cos(2 * Mathf.PI / _secondsPerDay * t) + 1);
->>>>>>> e7dcf088ad58ba2b9e47ca8da45371e2e53932b1
     }
 }
