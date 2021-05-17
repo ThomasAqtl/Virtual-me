@@ -33,8 +33,13 @@ Material:
     - __dirty: 0
     m_Colors:
     - _HorizonLineColor: {r: 0, g: 0, b: 0, a: 1}
+<<<<<<< HEAD:Assets/3rd-Party/Customizable Skybox/Stylized Sky/Materials/Day3.mat
     - _SkyGradientBottom: {r: 0.6098572, g: 0.86536175, b: 0.943124, a: 1}
     - _SkyGradientTop: {r: 0, g: 0.4397636, b: 0.8979536, a: 1}
+=======
+    - _SkyGradientBottom: {r: 0.29751396, g: 0.4263766, b: 0.46559566, a: 1}
+    - _SkyGradientTop: {r: 0, g: 0.2138866, b: 0.4362805, a: 1}
+>>>>>>> e7dcf088ad58ba2b9e47ca8da45371e2e53932b1:Assets/Customizable Skybox/Stylized Sky/Materials/Day3.mat
     - _SunDiscColor: {r: 1, g: 1, b: 1, a: 1}
     - _SunHaloColor: {r: 0.8962264, g: 0.8962264, b: 0.8962264, a: 1}
   m_BuildTextureStacks: []
