@@ -26,6 +26,13 @@ public class Timer : MonoBehaviour
     [Tooltip("Bottom light for night")]
     public Color skyboxBottomColorDark;
 
+    [Header("Lantern lights settings")]
+    [Range(0.0f, 15.0f)]
+    public float nightIntensity;
+    public Vector3 lightOnTime;
+    public Vector3 lightOffTime;
+    public Color lightColor;
+
     // format _time = Vector3 (hours, minutes, seconds)
    private Vector3 _time;
 
@@ -35,9 +42,16 @@ public class Timer : MonoBehaviour
    private const float _secondsPerDay = 86400.0f;
    private Color _skyboxColor1;
    private Color _skyboxColor2;
+   private GameObject _lights;
+   
 
     private void Awake() {
+
+        Application.targetFrameRate = 60;
+
         _time = new Vector3(hour, minute, second);
+        _lights = GameObject.Find("light");
+
         _skyboxColor1 = RenderSettings.skybox.GetColor("_SkyGradientTop");
         _skyboxColor2 = RenderSettings.skybox.GetColor("_SkyGradientBottom");
     }
@@ -49,6 +63,7 @@ public class Timer : MonoBehaviour
         }
         UpdateSunPos();
         UpdateSkybox();
+        UpdateLantern();
     }    
     private void UpdateTime() {
         _time.z += Time.deltaTime * timeFactor;
@@ -69,39 +84,46 @@ public class Timer : MonoBehaviour
     }
 
     private void UpdateSunPos() {
-
         // angle = 90° => midday, angle = 270° => noon
         // light is on reset position (0 , 0,  0)
         // We start from noon to compute light angle
 
         float angle = 270.0f + _time.x * _anglePerHour + _time.y * _anglePerMinute + _time.z * _anglePerSecond;
         transform.localEulerAngles = new Vector3(angle, 0.0f, 0.0f);
+        //transform.localEulerAngles = Vector3.Lerp(transform.localEulerAngles, new Vector3(angle, 0.0f, 0.0f), 0.5f);
     }
 
     private void UpdateSkybox() {
         // Skybox color depends on time
         float t = _time.x * 3600.0f + _time.y * 60.0f + _time.z;
-        float lambda = SetLambda(t);
+        float lambda = SetLambda(t, _secondsPerDay);
         
-        Color c1 = lambda * skyboxTopColorDark + (1-lambda) * skyboxTopColorBright;
+        Color c1 = lambda * skyboxTopColorDark + (1 - lambda) * skyboxTopColorBright;
         Color c2 = lambda * skyboxBottomColorDark + (1 - lambda) * skyboxBottomColorBright;
         
         RenderSettings.skybox.SetColor("_SkyGradientTop", c1);
         RenderSettings.skybox.SetColor("_SkyGradientBottom", c2);
-        //print(_skyboxColor1);
     }
 
-    public string GetTime() {
-
-        string h = _time.x < 10 ? "0"+_time.x : _time.x.ToString();
-        string m = _time.y < 10 ? "0"+_time.y : _time.y.ToString();
-        string s = _time.z < 10 ? "0" + _time.z : _time.z.ToString("0.");
-
-        string time = "TIME : " + h +":"+ m +":"+ s;
-        return time;
+    private void UpdateLantern() {
+        float t = _time.x * 3600.0f + _time.y * 60.0f + _time.z;
+        foreach (var li in GameObject.FindGameObjectsWithTag("LanternLight"))
+        {
+            if ((t >= lightOffTime.x * 3600.0f + lightOffTime.y * 60.0f + lightOffTime.z) ^ (t <= lightOnTime.x * 3600.0f + lightOnTime.y * 60.0f + lightOnTime.z)){
+                li.GetComponent<Light>().intensity = nightIntensity;
+            } else {
+                li.GetComponent<Light>().intensity = 0.0f;
+            }
+            li.GetComponent<Light>().color = lightColor;
+        }
     }
 
-    private float SetLambda(float t) {
-        return .5f * ( Mathf.Cos( 2 * Mathf.PI / _secondsPerDay * t ) + 1 );
+    public Vector3 GetTime() {
+        return _time;
+    }
+
+    // cosine-like periodic function of time with period p
+    private float SetLambda(float t, float p) {
+        return .5f * ( Mathf.Cos( 2 * Mathf.PI / p * t ) + 1 );
     }
 }   
